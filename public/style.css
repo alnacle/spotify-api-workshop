@@ -1,0 +1,31 @@
+body {
+  padding: 1em 2em;
+}
+ul.footer {
+  list-style:none;
+  display:inline;
+}
+ul.footer li {
+  display:inline;
+  margin-right: 1em;
+}
+
+table {
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: auto;
+}
+
+td {
+  border: 0px solid #ddd;
+  padding: 12px;
+  padding-left: 10px;
+}
+
+.circular_image {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  overflow: hidden;
+  float: left;
+}
