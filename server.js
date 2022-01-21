@@ -20,7 +20,7 @@ app.get("/authorize", (req, res) => {
   console.log("authorize");
 });
 
-app.get("/callback", async (req, res) => {
+app.get("/callback", (req, res) => {
   console.log("callback");
 });
 
@@ -28,7 +28,7 @@ app.get("/logout", function (request, response) {
   response.redirect("/");
 });
 
-app.get("/dashboard", async function (req, res) {
+app.get("/dashboard", function (req, res) {
   console.log("callback");
 });
 
