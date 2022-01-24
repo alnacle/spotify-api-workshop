@@ -1,0 +1,15 @@
+extends layout.pug
+    
+block content
+    h1 Recommendations
+
+    table 
+      each t in tracks
+        tr 
+          - var artist_name = t.artists[0].name
+          - var track_name = t.name
+          - var track_preview = t.preview_url
+
+          td #{artist_name}
+          td #{track_name}
+          td: a(href=track_preview) Preview
