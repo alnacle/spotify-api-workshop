@@ -25,7 +25,7 @@ app.get("/authorize", (req, res) => {
   var auth_query_parameters = new URLSearchParams({
     response_type: "code",
     client_id: client_id,
-    scope: "user-library-read",
+    scope: "user-library-read playlist-read-private",
     redirect_uri: redirect_uri,
   });
 
@@ -75,8 +75,9 @@ async function getData(endpoint) {
 app.get("/dashboard", async (req, res) => {
   const userInfo = await getData("/me");
   const tracks = await getData("/me/tracks?limit=10");
+  const playlists = await getData(`/users/${userInfo.id}/playlists`);
 
-  res.render("dashboard", { user: userInfo, tracks: tracks.items });
+  res.render("dashboard", { user: userInfo, tracks: tracks.items, playlists: playlists.items });
 });
 
 app.get("/recommendations", async (req, res) => {
