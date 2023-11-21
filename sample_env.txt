@@ -1,2 +1,3 @@
-CLIENT_ID="your_client_ID"
-CLIENT_SECRET="your_client_secret"
+CLIENT_ID="your_spotify_client_ID"
+CLIENT_SECRET="your_spotify_client_secret"
+TICKETMASTER_API_KEY="your_ticketmaster_api_key"
