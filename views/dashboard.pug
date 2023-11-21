@@ -5,9 +5,21 @@ block content
     img(src=user.images[0].url, class='circular_image')
 
     table
-        each event in artistEvents
+        thead
             tr
-                td #{event.artistName}
-                td #{event.eventName}
-                td #{event.eventDate}
-                td: a(href=event.ticketLink) Buy Tickets
+                th Artist
+                th Event
+                th Date
+                th City
+                th Country
+                th Buy Tickets
+
+        tbody
+            each event in artistEvents
+                tr
+                    td #{event.artistName}
+                    td #{event.eventName}
+                    td #{event.eventDate}
+                    td #{event.city}
+                    td #{event.country}
+                    td: a(href=event.ticketLink) Buy Tickets

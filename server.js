@@ -97,12 +97,20 @@ async function getArtistEvents(artistName) {
         
         const events = eventsResponse._embedded.events;
         for (const event of events) {
+          // Extract city and country information if available
+          const city = event._embedded?.venues[0]?.city?.name || ' ';
+          const country = event._embedded?.venues[0]?.country?.name || ' ';
+
+
+
           // Extract and structure relevant event data
           const eventData = {
             artistName: artist.name,
             eventName: event.name,
             eventDate: event.dates.start.localDate, // Assuming date is in ISO 8601 format
             ticketLink: event.url,
+            city: city,
+            country: country,
           };
           // console.log(`EVENT DATA: ${eventData}`)
           artistEvents.push(eventData);
