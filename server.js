@@ -14,6 +14,7 @@ app.use(express.static("public"));
 const redirect_uri = "http://localhost:3000/callback";
 const client_id = process.env.CLIENT_ID;
 const client_secret = process.env.CLIENT_SECRET;
+const ticketmaster_api_key = process.env.TICKETMASTER_API_KEY;
 
 global.access_token;
 
@@ -25,7 +26,7 @@ app.get("/authorize", (req, res) => {
   var auth_query_parameters = new URLSearchParams({
     response_type: "code",
     client_id: client_id,
-    scope: "user-library-read playlist-read-private",
+    scope: "user-library-read playlist-read-private user-follow-read",
     redirect_uri: redirect_uri,
   });
 
@@ -69,15 +70,74 @@ async function getData(endpoint) {
   });
 
   const data = await response.json();
+  // console.log(data);
   return data;
 }
 
+
+async function getArtistEvents(artistName) {
+    const response = await fetch(`https://app.ticketmaster.com/discovery/v2/events.json?classificationNmae=music&keyword=${artistName}&apikey=${ticketmaster_api_key}`, {
+      method: "get",
+    });
+  
+    const eventsData = await response.json();
+
+    return eventsData;
+
+  }
+  
+  async function getArtistEventsForAll(followedArtists) {
+    const artistEvents = [];
+  
+    for (const artist of followedArtists) {
+      // console.log(artist.name)
+      const eventsResponse = await getArtistEvents(artist.name);
+   
+      if (eventsResponse._embedded && eventsResponse._embedded.events.length > 0) {
+        
+        const events = eventsResponse._embedded.events;
+        for (const event of events) {
+          // Extract and structure relevant event data
+          const eventData = {
+            artistName: artist.name,
+            eventName: event.name,
+            eventDate: event.dates.start.localDate, // Assuming date is in ISO 8601 format
+            ticketLink: event.url,
+          };
+          // console.log(`EVENT DATA: ${eventData}`)
+          artistEvents.push(eventData);
+        }
+      }else {
+        // No events found for this artist, continue to the next one
+        continue;
+      }
+    }
+  
+    // Sort events by date
+    artistEvents.sort((a, b) => new Date(a.eventDate) - new Date(b.eventDate));
+
+    return artistEvents;
+  }
+
+
+
 app.get("/dashboard", async (req, res) => {
   const userInfo = await getData("/me");
-  const tracks = await getData("/me/tracks?limit=10");
-  const playlists = await getData(`/users/${userInfo.id}/playlists`);
+  const followingResponse = await getData('/me/following?type=artist');
+  const followedArtists = followingResponse.artists.items;
+  // console.log(followedArtists);
+  
 
-  res.render("dashboard", { user: userInfo, tracks: tracks.items, playlists: playlists.items });
+  const artistEvents = await getArtistEventsForAll(followedArtists);
+  // console.log(artistEvents);
+
+  res.render("dashboard", { user: userInfo, artistEvents });
+
+//   const events = await getEvents();
+//   console.log(events);
+//   // console.log(`Following ${following.artists.items.name}`);
+
+//   res.render("dashboard", { user: userInfo, tracks: tracks.items, playlists: playlists.items, following: following.artists.items });
 });
 
 app.get("/recommendations", async (req, res) => {

@@ -1,30 +1,13 @@
 extends layout.pug
     
 block content
-    h1 Welcome! #{user.id} ✨
+    h1 Welcome, #{user.display_name} !✨
     img(src=user.images[0].url, class='circular_image')
 
-    table 
-      each t in tracks
-        tr 
-          - var artist_name = t.track.artists[0].name
-          - var track_name = t.track.name
-          - var track_preview = t.track.preview_url
-          - var artist_id = t.track.artists[0].id
-          - var track_id = t.track.id 
-          
-
-          td #{artist_name}
-          td: a(href='/recommendations?artist=' + artist_id+'&track='+track_id) #{track_name}
-          td: a(href=track_preview) Preview
-
-    table 
-      each p in playlists 
-        tr 
-          - var playlist_name = p.name
-          - var playlist_tracks = p.tracks.total
-
-          td #{playlist_name}
-          td #{playlist_tracks}
-          //- td: a(href='/recommendations?artist=' + artist_id+'&track='+track_id) #{track_name}
-          //- td: a(href=track_preview) Preview
+    table
+        each event in artistEvents
+            tr
+                td #{event.artistName}
+                td #{event.eventName}
+                td #{event.eventDate}
+                td: a(href=event.ticketLink) Buy Tickets
